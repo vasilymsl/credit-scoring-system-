@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Оценка кредитоспособности - Банк</title>
+    <link rel="stylesheet" href="/static/styles/applications_style.css?v=15">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/" class="logo-link">
+                <img src="/static/img/bank-logo.svg" alt="Банк" class="logo">
+            </a>
+            <h1>Оценка кредитоспособности</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        {{ if .application }}
+        <div class="title-row">
+            <h1 class="page-title">Заявка на оценку кредитоспособности №{{.application.ID}}</h1>
+            {{ if eq .application.Status "draft" }}
+            <form action="/delete-application" method="POST" id="deleteForm" style="display:inline;">
+                <input type="hidden" name="application_id" value="{{.application.ID}}">
+                <button type="button" class="btn-delete" onclick="deleteApplication()">Очистить заявку</button>
+            </form>
+            {{ end }}
+        </div>
+        
+        <div class="borrower-section">
+            <h2 class="section-title">Данные для оценки кредитоспособности:</h2>
+            
+            <div class="info-fields">
+                <div class="info-field">
+                    <div class="field-label">ФИО заемщика:</div>
+                    <div class="field-value">{{ if .application.FullName }}{{.application.FullName}}{{ else }}<em>Не указано</em>{{ end }}</div>
+                </div>
+                
+                <div class="info-field">
+                    <div class="field-label">Ежемесячный доход:</div>
+                    <div class="field-value">{{ if gt .application.Income 0.0 }}{{ printf "%.2f ₽" .application.Income }}{{ else }}<em>Не указан</em>{{ end }}</div>
+                </div>
+                
+                <div class="info-field">
+                    <div class="field-label">Текущие обязательства/мес:</div>
+                    <div class="field-value">{{ if gt .application.Obligations 0.0 }}{{ printf "%.2f ₽" .application.Obligations }}{{ else }}<em>Не указаны</em>{{ end }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="product-table">
+            <div class="table-header">
+                <div class="header-cell">Услуга оценки</div>
+                <div class="header-cell">Точность</div>
+                <div class="header-cell">Срок расчета/внедрения</div>
+            </div>
+            
+            {{ range .application.Products }}
+            <div class="product-row">
+                <div class="product-info">
+                    <div class="product-icon-wrapper">
+                        <img src="{{.Order.ImageURL}}" alt="{{.Order.Title}}" class="product-icon">
+                    </div>
+                    <div class="product-name">{{.Order.Title}}</div>
+                </div>
+                
+                <div class="product-conditions">
+                    {{.Order.Rate}}
+                </div>
+                
+                <div class="product-payment">
+                    {{.Order.Term}}
+                </div>
+            </div>
+            {{ end }}
+        </div>
+    </div>
+
+        {{ else }}
+        <div class="message">
+            <h2>{{ .message }}</h2>
+            <p><a href="/">Перейти к выбору услуг</a></p>
+        </div>
+        {{ end }}
+        {{ if .error }}
+        <div class="error">
+            <h2>Ошибка: {{ .error }}</h2>
+            <p><a href="/">Вернуться на главную</a></p>
+        </div>
+        {{ end }}
+    </div>
+
+    <script>
+        function deleteApplication() {
+            if (confirm('Вы уверены, что хотите очистить корзину?')) {
+                document.getElementById('deleteForm').submit();
+            }
+        }
+    </script>
+</body>
+</html>
+
+

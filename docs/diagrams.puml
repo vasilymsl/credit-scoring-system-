@@ -1,0 +1,88 @@
+@startuml
+
+package "Frontend (React)" {
+    class App {
+        + render()
+    }
+
+    package "Pages" {
+        class HomePage
+        class ServicesPage {
+            - services: Service[]
+            - loading: boolean
+            + fetchServices(filter)
+        }
+        class ServiceDetailPage {
+            - service: Service
+            - loading: boolean
+            + fetchService(id)
+        }
+    }
+
+    package "Components" {
+        class NavbarComp
+        class BreadCrumbs
+        class ServiceCard
+        class Filter {
+            + onFilter(filter)
+        }
+    }
+
+    package "Modules" {
+        class API {
+            + getServices(filter)
+            + getServiceById(id)
+        }
+        class Mock {
+            + SERVICES_MOCK
+        }
+    }
+
+    App --> HomePage
+    App --> ServicesPage
+    App --> ServiceDetailPage
+    ServicesPage --> ServiceCard
+    ServicesPage --> Filter
+    ServicesPage --> API
+    ServiceDetailPage --> API
+}
+
+package "Backend (Go)" {
+    class Handler {
+        + GetOrdersAPI(c *gin.Context)
+        + GetOrderAPI(c *gin.Context)
+        + RegisterUserAPI(c *gin.Context)
+        + LoginUserAPI(c *gin.Context)
+    }
+
+    class Repository {
+        + GetOrdersWithFilter(title, dateFrom, dateTo, priceMin, priceMax)
+        + GetOrderByID(id)
+        + CreateUser(user)
+        + GetUserByUsername(username)
+    }
+
+    class Order {
+        + ID: int
+        + Title: string
+        + ImageURL: string
+        + SumFrom: int
+        + CreatedAt: time.Time
+    }
+    
+    class User {
+        + ID: int
+        + Username: string
+        + Password: string
+    }
+
+    Handler --> Repository
+    Repository --> Order
+    Repository --> User
+}
+
+ServicesPage ..> Handler : HTTP GET /api/credits
+ServiceDetailPage ..> Handler : HTTP GET /api/credits/:id
+
+@enduml
+
