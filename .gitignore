@@ -29,3 +29,8 @@ npm-debug.log*
 # Temporary files
 *.tmp
 *.temp
+
+# Local certificates
+frontend/cert.pem
+frontend/key.pem
+frontend/dev-dist/

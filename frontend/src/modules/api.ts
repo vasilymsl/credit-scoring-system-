@@ -1,3 +1,5 @@
+import { dest_api } from '../target_config';
+
 export interface Service {
     ID: number;
     Title: string;
@@ -45,7 +47,7 @@ export const getServices = async (filter: ServiceFilter = {}): Promise<ServiceLi
     if (filter.price_min) params.append("price_min", filter.price_min.toString());
     if (filter.price_max) params.append("price_max", filter.price_max.toString());
 
-    const response = await fetch(`/api/credits?${params.toString()}`);
+    const response = await fetch(`${dest_api}/credits?${params.toString()}`);
     if (!response.ok) {
         throw new Error("Failed to fetch services");
     }
@@ -53,7 +55,7 @@ export const getServices = async (filter: ServiceFilter = {}): Promise<ServiceLi
 };
 
 export const getServiceById = async (id: number): Promise<Service> => {
-    const response = await fetch(`/api/credits/${id}`);
+    const response = await fetch(`${dest_api}/credits/${id}`);
     if (!response.ok) {
         throw new Error("Failed to fetch service");
     }
@@ -65,7 +67,7 @@ export const getBasket = async () => {
     // Этот запрос может упасть с 401 (Unauthorized), если мы не залогинены,
     // но он будет виден в браузере, что и требуется.
     try {
-        await fetch('/api/applications/basket');
+        await fetch(`${dest_api}/applications/basket`);
     } catch (e) {
         // Игнорируем ошибку, нам важен сам факт запроса
         console.log("Basket fetch failed (expected for guest)");

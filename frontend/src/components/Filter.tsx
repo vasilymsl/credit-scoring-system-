@@ -1,77 +1,82 @@
-import React, { useState } from 'react';
-import { Button, Form, Row, Col } from 'react-bootstrap';
+import React from 'react';
+import { Button, Form } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
 import { ServiceFilter } from '../modules/api';
+import { 
+    useFilter, 
+    setTitleAction, 
+    resetFilterAction 
+} from '../slices/filterSlice';
 
 interface Props {
     onFilter: (filter: ServiceFilter) => void;
 }
 
 export const Filter: React.FC<Props> = ({ onFilter }) => {
-    const [title, setTitle] = useState('');
-    const [dateFrom, setDateFrom] = useState('');
-    const [dateTo, setDateTo] = useState('');
-    const [priceMin, setPriceMin] = useState('');
-    const [priceMax, setPriceMax] = useState('');
+    const dispatch = useDispatch();
+    const { title } = useFilter();
 
     const handleSubmit = () => {
-        onFilter({
-            title,
-            date_from: dateFrom,
-            date_to: dateTo,
-            price_min: priceMin ? Number(priceMin) : undefined,
-            price_max: priceMax ? Number(priceMax) : undefined,
-        });
+        onFilter({ title });
+    };
+
+    const handleReset = () => {
+        dispatch(resetFilterAction());
+        onFilter({});
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSubmit();
+        }
     };
 
     return (
-        <Form className="mb-4 p-3 bg-light border rounded">
-            <Row className="mb-3">
-                <Col md={3}>
-                    <Form.Control 
-                        placeholder="Название" 
-                        value={title} 
-                        onChange={e => setTitle(e.target.value)} 
-                    />
-                </Col>
-                <Col md={3}>
-                    <Form.Control 
-                        type="date" 
-                        placeholder="Дата от" 
-                        value={dateFrom} 
-                        onChange={e => setDateFrom(e.target.value)} 
-                    />
-                </Col>
-                <Col md={3}>
-                    <Form.Control 
-                        type="date" 
-                        placeholder="Дата до" 
-                        value={dateTo} 
-                        onChange={e => setDateTo(e.target.value)} 
-                    />
-                </Col>
-                <Col md={3}>
-                    <Button variant="primary" onClick={handleSubmit} className="w-100">Применить фильтр</Button>
-                </Col>
-            </Row>
-            <Row>
-                <Col md={3}>
-                     <Form.Control 
-                        type="number" 
-                        placeholder="Цена от" 
-                        value={priceMin} 
-                        onChange={e => setPriceMin(e.target.value)} 
-                    />
-                </Col>
-                <Col md={3}>
-                     <Form.Control 
-                        type="number" 
-                        placeholder="Цена до" 
-                        value={priceMax} 
-                        onChange={e => setPriceMax(e.target.value)} 
-                    />
-                </Col>
-            </Row>
-        </Form>
+        <div style={{ 
+            display: 'flex', 
+            gap: '10px', 
+            marginBottom: '25px',
+            alignItems: 'center',
+            flexWrap: 'wrap'
+        }}>
+            <Form.Control 
+                placeholder="Поиск" 
+                value={title} 
+                onChange={e => dispatch(setTitleAction(e.target.value))}
+                onKeyPress={handleKeyPress}
+                style={{ 
+                    flex: '1 1 300px',
+                    backgroundColor: '#D9D9D9',
+                    border: '1px solid #e0e0e0',
+                    padding: '12px 15px',
+                    fontSize: '1rem'
+                }}
+            />
+            <Button 
+                onClick={handleSubmit}
+                style={{ 
+                    backgroundColor: '#0b1f35', 
+                    borderColor: '#0b1f35',
+                    padding: '12px 30px',
+                    fontWeight: '500'
+                }}
+            >
+                Найти
+            </Button>
+            {title && (
+                <Button 
+                    variant="outline-secondary"
+                    onClick={handleReset}
+                    style={{ 
+                        padding: '12px 20px',
+                        borderColor: '#e0e0e0'
+                    }}
+                >
+                    Сброс
+                </Button>
+            )}
+        </div>
     );
 };
 

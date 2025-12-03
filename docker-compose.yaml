@@ -43,6 +43,12 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./init-db:/docker-entrypoint-initdb.d
 
+  redis:
+    image: redis:alpine
+    hostname: redis
+    ports:
+      - "6379:6379"
+
   adminer:
     image: adminer:latest
     ports:
@@ -68,9 +74,12 @@ services:
       MINIO_ACCESS_KEY: minio
       MINIO_SECRET_KEY: minio124
       MINIO_USE_SSL: "false"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     depends_on:
       - postgres
       - nginx
+      - redis
     restart: unless-stopped
 
   minio1:

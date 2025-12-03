@@ -8,24 +8,26 @@ import { getBasket } from '../modules/api';
 
 export const NavbarComp = () => {
   // Вызываем запрос корзины при загрузке Navbar (при старте приложения)
-  // Это нужно для демонстрации запроса в Network (по требованию преподавателя)
   useEffect(() => {
     getBasket();
   }, []);
 
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar expand="lg" style={{ backgroundColor: '#0b1f35' }}>
       <Container>
-        <Navbar.Brand as={Link} to={ROUTES.HOME}>Scoring App</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Brand as={Link} to={ROUTES.HOME} style={{ color: 'white', fontWeight: 'bold' }}>
+          🏛️ Оценка кредитоспособности
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" style={{ borderColor: 'rgba(255,255,255,0.5)' }}>
+          <span style={{ color: 'white' }}>☰</span>
+        </Navbar.Toggle>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={Link} to={ROUTES.HOME}>{ROUTE_LABELS.HOME}</Nav.Link>
-            <Nav.Link as={Link} to={ROUTES.SERVICES}>{ROUTE_LABELS.SERVICES}</Nav.Link>
+            <Nav.Link as={Link} to={ROUTES.HOME} style={{ color: 'white' }}>{ROUTE_LABELS.HOME}</Nav.Link>
+            <Nav.Link as={Link} to={ROUTES.SERVICES} style={{ color: 'white' }}>{ROUTE_LABELS.SERVICES}</Nav.Link>
           </Nav>
           <Nav>
-             {/* Иконка корзины (визуально) */}
-             <Nav.Link>🛒 Заявка</Nav.Link>
+             <Nav.Link style={{ color: 'white' }}>📋 Моя заявка</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

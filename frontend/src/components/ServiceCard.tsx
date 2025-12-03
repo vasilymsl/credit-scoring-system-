@@ -3,44 +3,58 @@ import { Button, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../Routes';
 import { Service } from '../modules/api';
+import { transformImageUrl } from '../target_config';
 
-// Локальная заглушка (цветной квадрат), чтобы не зависеть от внешних сервисов
-const defaultImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23cccccc'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='20' fill='%23666666'%3ENo Image%3C/text%3E%3C/svg%3E";
+// Локальная заглушка (цветной квадрат)
+const defaultImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23F0F0F0'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='16' fill='%23999'%3ENo Image%3C/text%3E%3C/svg%3E";
 
 interface Props {
     service: Service;
 }
 
 export const ServiceCard: React.FC<Props> = ({ service }) => {
-    // Нормализация полей (берем либо UpperCase, либо camelCase)
+    // Нормализация полей
     const title = service.Title || service.title || "Без названия";
     const description = service.Description || service.description || "";
-    const rate = service.Rate || service.rate || "—";
-    const term = service.Term || service.term || "—";
+    const rate = service.Rate || service.rate || "";
+    const term = service.Term || service.term || "";
     const id = service.ID || service.id;
-    const imageURL = service.ImageURL || service.image_url || defaultImage;
+    // Преобразуем URL картинки для Tauri (localhost -> IP)
+    const rawImageURL = service.ImageURL || service.image_url || "";
+    const imageURL = transformImageUrl(rawImageURL) || defaultImage;
 
     return (
-        <Card className="card" style={{ width: '100%' }}>
+        <Card className="card" style={{ width: '100%', border: '1px solid #e0e0e0' }}>
             <Card.Img 
                 variant="top" 
                 src={imageURL} 
                 height={200} 
-                style={{ objectFit: 'contain' }}
+                style={{ objectFit: 'contain', backgroundColor: '#F0F0F0', padding: '10px' }}
                 onError={(e) => { e.currentTarget.src = defaultImage; }}
             />
-            <Card.Body>
-                <Card.Title>{title}</Card.Title>
-                <Card.Text>
-                    {description}
-                    <br/>
-                    <strong>Ставка:</strong> {rate}
-                    <br/>
-                    <strong>Срок:</strong> {term}
+            <Card.Body style={{ padding: '20px' }}>
+                <Card.Title style={{ color: '#000', fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '15px' }}>
+                    {title}
+                </Card.Title>
+                <Card.Text style={{ color: '#555', fontSize: '0.9rem', marginBottom: '10px' }}>
+                    {description && <span style={{ display: 'block', marginBottom: '10px' }}>{description.substring(0, 100)}...</span>}
+                    {rate && <span style={{ display: 'block', color: '#666' }}>• Точность: {rate}</span>}
+                    {term && <span style={{ display: 'block', color: '#666' }}>• Срок: {term}</span>}
                 </Card.Text>
-                <Link to={`${ROUTES.SERVICES}/${id}`}>
-                    <Button variant="primary">Подробнее</Button>
-                </Link>
+                <div style={{ marginTop: '15px' }}>
+                    <Link to={`${ROUTES.SERVICES}/${id}`} style={{ textDecoration: 'none' }}>
+                        <Button 
+                            style={{ 
+                                width: '100%', 
+                                backgroundColor: '#0b1f35', 
+                                borderColor: '#0b1f35',
+                                padding: '10px'
+                            }}
+                        >
+                            Подробнее
+                        </Button>
+                    </Link>
+                </div>
             </Card.Body>
         </Card>
     );
