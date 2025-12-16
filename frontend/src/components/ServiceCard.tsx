@@ -2,23 +2,24 @@ import React from 'react';
 import { Button, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '../Routes';
-import { Service } from '../modules/api';
+import { ScoringModel } from '../modules/api';
 
-// Локальная заглушка (цветной квадрат), чтобы не зависеть от внешних сервисов
+// Картинка по умолчанию (если у модели нет изображения)
 const defaultImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23cccccc'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='20' fill='%23666666'%3ENo Image%3C/text%3E%3C/svg%3E";
 
 interface Props {
-    service: Service;
+    model: ScoringModel;
 }
 
-export const ServiceCard: React.FC<Props> = ({ service }) => {
+// Карточка скоринговой модели
+export const ScoringModelCard: React.FC<Props> = ({ model }) => {
     // Нормализация полей (берем либо UpperCase, либо camelCase)
-    const title = service.Title || service.title || "Без названия";
-    const description = service.Description || service.description || "";
-    const rate = service.Rate || service.rate || "—";
-    const term = service.Term || service.term || "—";
-    const id = service.ID || service.id;
-    const imageURL = service.ImageURL || service.image_url || defaultImage;
+    const title = model.Title || model.title || "Без названия";
+    const description = model.Description || model.description || "";
+    const rate = model.Rate || model.rate || "—";
+    const term = model.Term || model.term || "—";
+    const id = model.ID || model.id;
+    const imageURL = model.ImageURL || model.image_url || defaultImage;
 
     return (
         <Card className="card" style={{ width: '100%' }}>

@@ -1,42 +1,43 @@
-import { ServiceListResponse } from "./api";
+import { ScoringModelListResponse } from "./api";
 
-export const SERVICES_MOCK: ServiceListResponse = {
+// Mock-данные для скоринговых моделей (используются при недоступном бэкенде)
+export const SCORING_MODELS_MOCK: ScoringModelListResponse = {
     Total: 3,
     Orders: [
         {
             ID: 1,
-            Title: "Mock Service 1",
+            Title: "Базовый скоринг",
             Icon: "",
             ImageURL: "",
-            Rate: "90%",
-            Term: "1 day",
-            Amount: "1000",
-            Description: "This is a mock service",
-            SumFrom: 1000,
+            Rate: "от 15%",
+            Term: "до 12 месяцев",
+            Amount: "до 500 000 ₽",
+            Description: "Базовая модель оценки кредитоспособности",
+            SumFrom: 50000,
             CreatedAt: "2023-01-01T00:00:00Z"
         },
         {
             ID: 2,
-            Title: "Mock Service 2",
+            Title: "Экспресс-скоринг",
             Icon: "",
             ImageURL: "",
-            Rate: "95%",
-            Term: "2 days",
-            Amount: "2000",
-            Description: "This is another mock service",
-            SumFrom: 2000,
+            Rate: "от 18%",
+            Term: "до 6 месяцев",
+            Amount: "до 100 000 ₽",
+            Description: "Быстрая оценка для небольших сумм",
+            SumFrom: 10000,
             CreatedAt: "2023-01-02T00:00:00Z"
         },
         {
             ID: 3,
-            Title: "Mock Service 3",
+            Title: "Ипотечный скоринг",
             Icon: "",
             ImageURL: "",
-            Rate: "99%",
-            Term: "3 days",
-            Amount: "3000",
-            Description: "This is a third mock service",
-            SumFrom: 3000,
+            Rate: "от 10%",
+            Term: "до 30 лет",
+            Amount: "до 30 000 000 ₽",
+            Description: "Расширенная модель для ипотечного кредитования",
+            SumFrom: 1000000,
             CreatedAt: "2023-01-03T00:00:00Z"
         }
     ]

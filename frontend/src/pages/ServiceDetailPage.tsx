@@ -1,27 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Spinner, Image, Button } from 'react-bootstrap';
+import { Container, Row, Col, Spinner, Image } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import { Service, getServiceById } from '../modules/api';
-import { SERVICES_MOCK } from '../modules/mock';
+import { ScoringModel, getScoringModelById } from '../modules/api';
+import { SCORING_MODELS_MOCK } from '../modules/mock';
 import { BreadCrumbs } from '../components/BreadCrumbs';
 import { ROUTES, ROUTE_LABELS } from '../Routes';
 
+// Картинка по умолчанию
 const defaultImage = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 150 150'%3E%3Crect width='150' height='150' fill='%23cccccc'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='20' fill='%23666666'%3ENo Image%3C/text%3E%3C/svg%3E";
 
-export const ServiceDetailPage: React.FC = () => {
+export const ScoringModelDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const [service, setService] = useState<Service | null>(null);
+    const [model, setModel] = useState<ScoringModel | null>(null);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (!id) return;
         setLoading(true);
-        getServiceById(Number(id))
-            .then(data => setService(data))
+        getScoringModelById(Number(id))
+            .then(data => setModel(data))
             .catch(() => {
                 // @ts-ignore
-                const mockService = SERVICES_MOCK.Orders.find(s => s.ID === Number(id) || s.id === Number(id));
-                setService(mockService || null);
+                const mockModel = SCORING_MODELS_MOCK.Orders.find(s => s.ID === Number(id) || s.id === Number(id));
+                setModel(mockModel || null);
             })
             .finally(() => setLoading(false));
     }, [id]);
@@ -34,18 +35,18 @@ export const ServiceDetailPage: React.FC = () => {
         );
     }
 
-    if (!service) {
-        return <Container className="mt-5">Service not found</Container>;
+    if (!model) {
+        return <Container className="mt-5">Скоринговая модель не найдена</Container>;
     }
 
     // Нормализация полей
-    const title = service.Title || service.title || "Без названия";
-    const description = service.Description || service.description || "";
-    const rate = service.Rate || service.rate || "—";
-    const term = service.Term || service.term || "—";
-    const sumFrom = service.SumFrom || service.sum_from || 0;
-    const amount = service.Amount || service.amount || "—";
-    const imageURL = service.ImageURL || service.image_url || defaultImage;
+    const title = model.Title || model.title || "Без названия";
+    const description = model.Description || model.description || "";
+    const rate = model.Rate || model.rate || "—";
+    const term = model.Term || model.term || "—";
+    const sumFrom = model.SumFrom || model.sum_from || 0;
+    const amount = model.Amount || model.amount || "—";
+    const imageURL = model.ImageURL || model.image_url || defaultImage;
 
     return (
         <Container>
@@ -71,11 +72,6 @@ export const ServiceDetailPage: React.FC = () => {
                     <p><strong>Срок:</strong> {term}</p>
                     <p><strong>Сумма от:</strong> {sumFrom} руб.</p>
                     <p><strong>Сумма до:</strong> {amount}</p>
-                    
-                    {/* Кнопки убраны согласно замечаниям: 
-                        1. "Подать заявку" не нужна гостю.
-                        2. "Назад" не нужна, так как есть Breadcrumbs. 
-                    */}
                 </Col>
             </Row>
         </Container>

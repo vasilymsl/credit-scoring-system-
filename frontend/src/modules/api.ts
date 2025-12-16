@@ -1,4 +1,5 @@
-export interface Service {
+// Интерфейс скоринговой модели
+export interface ScoringModel {
     ID: number;
     Title: string;
     Icon: string;
@@ -23,51 +24,44 @@ export interface Service {
     created_at?: string;
 }
 
-export interface ServiceListResponse {
+// Ответ со списком скоринговых моделей
+export interface ScoringModelListResponse {
     Total: number;
-    Orders: Service[];
-    orders?: Service[]; // Поддержка camelCase
+    Orders: ScoringModel[];
+    orders?: ScoringModel[]; // Поддержка camelCase
 }
 
-export interface ServiceFilter {
+// Фильтр для поиска скоринговых моделей (только по названию)
+export interface ScoringModelFilter {
     title?: string;
-    date_from?: string;
-    date_to?: string;
-    price_min?: number;
-    price_max?: number;
 }
 
-export const getServices = async (filter: ServiceFilter = {}): Promise<ServiceListResponse> => {
+// Получение списка скоринговых моделей
+export const getScoringModels = async (filter: ScoringModelFilter = {}): Promise<ScoringModelListResponse> => {
     const params = new URLSearchParams();
     if (filter.title) params.append("title", filter.title);
-    if (filter.date_from) params.append("date_from", filter.date_from);
-    if (filter.date_to) params.append("date_to", filter.date_to);
-    if (filter.price_min) params.append("price_min", filter.price_min.toString());
-    if (filter.price_max) params.append("price_max", filter.price_max.toString());
 
     const response = await fetch(`/api/credits?${params.toString()}`);
     if (!response.ok) {
-        throw new Error("Failed to fetch services");
+        throw new Error("Failed to fetch scoring models");
     }
     return response.json();
 };
 
-export const getServiceById = async (id: number): Promise<Service> => {
+// Получение одной скоринговой модели по ID
+export const getScoringModelById = async (id: number): Promise<ScoringModel> => {
     const response = await fetch(`/api/credits/${id}`);
     if (!response.ok) {
-        throw new Error("Failed to fetch service");
+        throw new Error("Failed to fetch scoring model");
     }
     return response.json();
 };
 
-// Запрос корзины (для демонстрации в Network, даже если вернет 401/403)
+// Запрос корзины (иконка в Navbar, для демонстрации в Network)
 export const getBasket = async () => {
-    // Этот запрос может упасть с 401 (Unauthorized), если мы не залогинены,
-    // но он будет виден в браузере, что и требуется.
     try {
         await fetch('/api/applications/basket');
     } catch (e) {
-        // Игнорируем ошибку, нам важен сам факт запроса
-        console.log("Basket fetch failed (expected for guest)");
+        console.log("Basket request sent");
     }
 };

@@ -1,42 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Spinner } from 'react-bootstrap';
-import { Service, getServices, ServiceFilter } from '../modules/api';
-import { SERVICES_MOCK } from '../modules/mock';
-import { ServiceCard } from '../components/ServiceCard';
+import { ScoringModel, getScoringModels, ScoringModelFilter } from '../modules/api';
+import { SCORING_MODELS_MOCK } from '../modules/mock';
+import { ScoringModelCard } from '../components/ServiceCard';
 import { Filter } from '../components/Filter';
 import { BreadCrumbs } from '../components/BreadCrumbs';
 import { ROUTE_LABELS } from '../Routes';
 
-export const ServicesPage: React.FC = () => {
-    const [services, setServices] = useState<Service[]>([]);
+export const ScoringModelsPage: React.FC = () => {
+    const [models, setModels] = useState<ScoringModel[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const fetchServices = async (filter: ServiceFilter = {}) => {
+    const fetchModels = async (filter: ScoringModelFilter = {}) => {
         setLoading(true);
         try {
-            const response = await getServices(filter);
+            const response = await getScoringModels(filter);
             // Поддержка разного регистра ключей (Orders или orders)
             // @ts-ignore
-            const orders = response.Orders || response.orders || [];
-            setServices(orders);
+            const data = response.Orders || response.orders || [];
+            setModels(data);
         } catch (e) {
             console.error(e);
             // Fallback to mock data if fetch fails
-            setServices(SERVICES_MOCK.Orders);
+            setModels(SCORING_MODELS_MOCK.Orders);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchServices();
+        fetchModels();
     }, []);
 
     return (
         <Container>
             <BreadCrumbs crumbs={[{ label: ROUTE_LABELS.SERVICES }]} />
             <h1>{ROUTE_LABELS.SERVICES}</h1>
-            <Filter onFilter={fetchServices} />
+            <Filter onFilter={fetchModels} />
             
             {loading ? (
                 <div className="d-flex justify-content-center">
@@ -44,9 +44,9 @@ export const ServicesPage: React.FC = () => {
                 </div>
             ) : (
                 <Row xs={1} md={2} lg={3} className="g-4">
-                    {services.map(service => (
-                        <Col key={service.ID}>
-                            <ServiceCard service={service} />
+                    {models.map(model => (
+                        <Col key={model.ID || model.id}>
+                            <ScoringModelCard model={model} />
                         </Col>
                     ))}
                 </Row>

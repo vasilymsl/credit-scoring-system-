@@ -1,4 +1,4 @@
 export * from './HomePage';
-export * from './ServicesPage';
-export * from './ServiceDetailPage';
+export { ScoringModelsPage } from './ServicesPage';
+export { ScoringModelDetailPage } from './ServiceDetailPage';
 
